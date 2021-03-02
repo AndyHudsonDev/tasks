@@ -1,0 +1,60 @@
+
+Instruction how to build and run on Linux OS (Ubuntu 16.04 was used):
+
+1. run terminal in project directory
+
+2. make sure Boost libriry exists in the system, I used version 1.71.0. 
+   If no Boost in the system, download and install it from https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.gz
+
+3. provide path to Boost library, by command like this:
+   $export BOOST_ROOT="/home/andrey/boost_1_71_0/"
+
+4  if no sqlite3 exists in the system, install it. I used https://www.sqlite.org/2019/sqlite-autoconf-3300100.tar.gz.
+
+5. run command:
+   $cmake .
+
+6. run command: 
+   $make
+
+7. there are 2 services implemented as part of scheduler- connect to google.com to measure connectivity time in microseconds 
+   and rss measurements in bytes.
+   Configuration file to set up intervals for each service located in directory and called scheduler.json
+
+8. once parameters set, open the directory ./scheduler and run command:
+   $./scheduler
+
+9. there are 3 tables created in sqlite3, table RSS_HIST is to store every time resident set size is calculated,
+   TCP_CONN_HIST is to store every time connection via tcp took place to connect to google.com, and table with statistics for these 2 services is called STATISTICS,
+   which stores and updates min, max and avg for every time measurement took place.  
+   The database is created and stored in the same directory scheduler.
+
+Below is an instruction how to install sqlite3, taken from https://www.tutorialspoint.com/sqlite/sqlite_installation.htm
+
+
+#################################################################################################################################################################################
+Instruction how to install sqlite3:
+Install SQLite on Linux
+
+Today, almost all the flavours of Linux OS are being shipped with SQLite. So you just issue the following command to check if you already have SQLite installed on your machine.
+
+$sqlite3
+SQLite version 3.7.15.2 2013-01-09 11:53:05
+Enter ".help" for instructions
+Enter SQL statements terminated with a ";"
+sqlite>
+
+If you do not see the above result, then it means you do not have SQLite installed on your Linux machine. Following are the following steps to install SQLite −
+
+    Step 1 − Go to SQLite download page and download sqlite-autoconf-*.tar.gz from source code section.
+
+    Step 2 − Run the following command −
+
+$tar xvfz sqlite-autoconf-3300100.tar.gz
+$cd sqlite-autoconf-3300100
+$./configure --prefix=/usr/local
+$make
+$make install
+
+#################################################################################################################################################################################
+

@@ -1,0 +1,4 @@
+{
+"tcp_interval_seconds":5,
+"rss_interval_seconds":7 
+}
