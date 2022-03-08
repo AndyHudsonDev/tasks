@@ -1,0 +1,8 @@
+1.Use two threads to increment an integer. 
+Thread A increments when even and Thread B increments when odd 
+(for the integer problem we can have it specify up to a number provided on the command line)
+
+1a. What are some of the difficulties in adding more threads? Please show the difficulties with code.
+
+1b. Extra credit – Design an improved solution to the above that can scale with many threads
+

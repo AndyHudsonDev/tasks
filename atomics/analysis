@@ -1,0 +1,89 @@
+
+Analysis.
+
+There are solutions for 1a and 1b tasks presented (CMake file and main.cpp per each task).
+
+Task 1a:
+
+  Approach 1.
+    It has been solved with one atomic variable uint64_t, that is basically acts like a flag 
+    for 2 threads, one thread increments if the variable is even, another one if it is odd.
+    The solution for this task 1a IS NOT scalable for more threads, only two threads can use this approach.
+    Also, the algorithm is lock-free, though it does busy read, making 2 cores 100 constantly busy.
+    Also, no false sharing could exist by design, as only one variable is used.
+    I played a bit with some alignment tricks to see if it might give any performance gain, but did not find any. 
+
+    How to test:
+    ./Mill1a 10000
+
+  Approach 2.
+    CAS was used, in particular compare_exchange_weak operation via atomic, so we basically have 2 threads, 
+    and each thread knows when it should increase atomic, based on step that is done to a local variable,
+    that moves forward with + 2 step. This approach is easy to scale for even number of threads (implemented), 
+    but a bit tricky to scale for number of threads that is odd (this is really pointless, as hits performance).
+    
+    How to test:
+    ./1a_cas 10000
+
+
+Task 1b:
+
+  Approach 1.
+    Used Test and test-and-set (TTAS) spinlock, best result is when it has 2 threads.
+    Also, even number of threads is much better, odd number hits performance. Tested from 2 to 24 threads. 
+    I tried to use first asm rdtsc incruction in C++ code to measure clocks, but for numbers like 10000000,
+    it was enough command below):
+
+    for i in {1..5}; do time ./Mill1b 10000000 4; done
+
+  Approach 2.
+    CAS was used as for 1a_cas, but for even number of threads.
+   
+    How to test:
+   ./1b_cas 10000000 24
+
+
+
+I know the algos are not ideal, I would have tried to compare them to implementations with C++20 semaphores or 
+C++11 mutex + condition variable but that takes a bit more time and I don't think they would be faster.
+
+
+Solutions have been written and tested on:
+
+andrey@andrey-System-Product-Name:~$ uname -a
+Linux andrey-System-Product-Name 4.15.0-133-generic #137~16.04.1-Ubuntu SMP Fri Jan 15 02:55:18 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+
+andrey@andrey-System-Product-Name:~$ lscpu
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                24
+On-line CPU(s) list:   0-23
+Thread(s) per core:    2
+Core(s) per socket:    12
+Socket(s):             1
+NUMA node(s):          1
+Vendor ID:             AuthenticAMD
+CPU family:            23
+Model:                 113
+Model name:            AMD Ryzen 9 3900X 12-Core Processor
+Stepping:              0
+CPU MHz:               2053.551
+CPU max MHz:           3800,0000
+CPU min MHz:           2200,0000
+BogoMIPS:              7585.85
+Virtualization:        AMD-V
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              512K
+L3 cache:              16384K
+NUMA node0 CPU(s):     0-23
+
+
+
+
+
+
+
+
+
